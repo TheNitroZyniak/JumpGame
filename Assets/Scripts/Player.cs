@@ -19,12 +19,13 @@ public class Player : MonoBehaviour {
 
     public static bool collisionMade, death;
 
-    public static int jumpingType;
+    public static int jumpingType, endScore;
     public Levels levels;
 
     public AudioClip[] clips;
 
     void Start() {
+        endScore = 0;
         done = false;
         jumpingType = 0;
         death = false;
@@ -56,8 +57,7 @@ public class Player : MonoBehaviour {
 
         if (transform.position.y < _camera.transform.position.y - 8) {
             //if (!done && Advertisement.IsReady(AdManager.rewardedVideoAd)) {
-            if (!done) {
-                SetPrefs((int)(_camera.transform.position.y * 10));
+            if (!done) {               
                 death = true;
                 transform.position = new Vector3(0, _camera.transform.position.y - 8, transform.position.z);
                 rigitBody2D.gravityScale = 0;
@@ -67,7 +67,8 @@ public class Player : MonoBehaviour {
                 
             } 
             else {
-                print(transform.position.y);
+                SetPrefs((int)(_camera.transform.position.y * 10));
+                endScore = (int)(_camera.transform.position.y * 10);
                 SceneManager.LoadScene("Menu");
             }
         }
@@ -195,13 +196,15 @@ public class Player : MonoBehaviour {
         transform.position = new Vector3(0, _camera.transform.position.y - 8, transform.position.z);
         _renderer.color = new Color(1, 1, 1, 0);
         death = true;
-        SetPrefs((int)(_camera.transform.position.y * 10));
 
-        print("AAA");
 
         //if(!done && Advertisement.IsReady(AdManager.rewardedVideoAd)) levels.RewardVideo();
-        if(!done) levels.RewardVideo();
-        else SceneManager.LoadScene("Menu");
+        if (!done) levels.RewardVideo();
+        else {
+            SetPrefs((int)(_camera.transform.position.y * 10));
+            endScore = (int)(_camera.transform.position.y * 10);
+            SceneManager.LoadScene("Menu");      
+        }
         done = true;
     }  
 
@@ -232,6 +235,8 @@ public class Player : MonoBehaviour {
     }
 
     public void Cancel() {
+        SetPrefs((int)(_camera.transform.position.y * 10));
+        endScore = (int)(_camera.transform.position.y * 10);
         SceneManager.LoadScene("Menu");
     }
 }
